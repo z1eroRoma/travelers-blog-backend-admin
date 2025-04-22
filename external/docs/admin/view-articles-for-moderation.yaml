@@ -1,0 +1,29 @@
+/admin/articles/moderation:
+  get:
+    tags:
+      - Admin
+    summary: Просмотр списка статей на модерацию
+    description: Получение списка статей, которые находятся на модерации.
+    responses:
+      200:
+        description: Успешное получение списка статей.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Идентификатор статьи.
+                  title:
+                    type: string
+                    description: Заголовок статьи.
+                  status:
+                    type: string
+                    description: Статус статьи.
+      401:
+        $ref: "#/definitions/401"
+      404:
+        $ref: "#/definitions/404"

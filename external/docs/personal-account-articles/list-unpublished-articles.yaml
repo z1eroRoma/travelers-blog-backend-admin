@@ -1,0 +1,31 @@
+/unpublished:
+  get:
+    tags:
+      - Personal-Account-Articles
+    summary: List unpublished articles
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: List of unpublished articles
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_image:
+                  type: string
+                user_name:
+                  type: string
+                location:
+                  type: string
+                status:
+                  type: string
+                preview:
+                  type: string
+                title:
+                  type: string
+                description:
+                  type: string
+      401:
+        $ref: "#/definitions/401"

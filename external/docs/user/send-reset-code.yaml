@@ -1,0 +1,47 @@
+/user/send-reset-code:
+  post:
+    tags:
+      - User
+    summary: Отправка кода для сброса пароля на email
+    description: Проверка существования email в системе, отправка кода для сброса пароля и предотвращение многократных запросов в короткий период времени.
+    security: [ ]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [email]
+            properties:
+              email:
+                type: string
+                format: email
+                maxLength: 255
+                description: Электронная почта пользователя для отправки кода сброса пароля.
+    responses:
+      200:
+        description: Код сброса пароля успешно отправлен.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Проверьте свою почту"
+      404:
+        description: Пользователь с таким email не найден.
+        $ref: "#/definitions/404"
+      429:
+        description: Запрос слишком частый. Повторите через некоторое время.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Код был отправлен менее 60 секунд назад"
+      422:
+        description: Неверные данные в запросе.
+        $ref: "#/definitions/422"

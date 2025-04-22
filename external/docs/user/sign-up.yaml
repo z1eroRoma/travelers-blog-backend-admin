@@ -1,0 +1,78 @@
+/user/sign-up:
+  post:
+    tags:
+      - User
+    summary: Sign up
+    description: Регистрация нового пользователя с верификацией кода и привязкой тем.
+    security: [ ]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [email, user_name, password, code, theme_ids]
+            properties:
+              email:
+                type: string
+                format: email
+                maxLength: 255
+                description: Электронная почта пользователя.
+              user_name:
+                type: string
+                minLength: 4
+                maxLength: 50
+                pattern: "^[a-zA-Z0-9_-]+$"
+                description: Уникальное имя пользователя.
+              password:
+                type: string
+                minLength: 8
+                maxLength: 100
+                description: Пароль пользователя.
+              real_name:
+                type: string
+                maxLength: 50
+                pattern: "^[a-zA-Zа-яА-Я\\s-]+$"
+                description: Настоящее имя пользователя (необязательно).
+              description:
+                type: string
+                maxLength: 255
+                description: Описание пользователя (необязательно).
+              birth_date:
+                type: string
+                pattern: "^(3[01]|[12][0-9]|0?[1-9])(\\.)(1[0-2]|0?[1-9])\\2([0-9]{2})?[0-9]{2}$"
+                description: Дата рождения пользователя в формате YYYY-MM-DD (необязательно).
+              code:
+                type: string
+                pattern: "^[0-9]{6}$"
+                description: Шестизначный код подтверждения.
+              theme_ids:
+                type: array
+                minItems: 3
+                items:
+                  type: string
+                  format: uuid
+                description: Список идентификаторов тем, которые пользователь выбрал.
+    responses:
+      200:
+        description: Пользователь успешно зарегистрирован.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Идентификатор пользователя.
+                access_token:
+                  type: string
+                  description: Токен доступа.
+      404:
+        description: Не найдено. Например, неверный код или тема не существует.
+        $ref: "#/definitions/404"
+      409:
+        description: Пользователь с таким email или user_name уже существует.
+        $ref: "#/definitions/409"
+      422:
+        description: Неверные данные в запросе.
+        $ref: "#/definitions/422"

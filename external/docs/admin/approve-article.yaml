@@ -1,0 +1,28 @@
+/admin/articles/moderation/{id}/approve:
+  post:
+    tags:
+      - Admin
+    summary: Одобрение статьи
+    description: Одобрение статьи, которая находится на модерации.
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: Идентификатор статьи.
+    responses:
+      200:
+        description: Статья успешно одобрена.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Сообщение об успешном одобрении статьи.
+      401:
+        $ref: "#/definitions/401"
+      404:
+        $ref: "#/definitions/404"

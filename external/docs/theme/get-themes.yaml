@@ -1,0 +1,27 @@
+/theme:
+  get:
+    tags:
+      - Theme
+    summary: Получить список всех тем
+    description: Возвращает список всех доступных тем.
+    responses:
+      200:
+        description: Список тем успешно получен.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Идентификатор темы.
+                    example: b0db914d-3a56-4ddd-84f9-94a3d9928da9
+                  title:
+                    type: string
+                    description: Название темы.
+                    example: qweqweqwe
+      401:
+        description: Отказано в доступе. Необходима аутентификация.
+        $ref: "#/definitions/401"

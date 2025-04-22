@@ -1,0 +1,27 @@
+/admin/complaints/articles:
+  get:
+    tags:
+      - Admin
+    summary: Просмотр жалоб на статьи
+    description: Получение списка жалоб на статьи.
+    responses:
+      200:
+        description: Успешное получение списка жалоб на статьи.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Идентификатор жалобы.
+                  article_id:
+                    type: string
+                    description: Идентификатор статьи.
+                  description:
+                    type: string
+                    description: Описание жалобы.
+      404:
+        $ref: "#/definitions/404"

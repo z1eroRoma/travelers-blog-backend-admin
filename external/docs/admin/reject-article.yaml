@@ -1,0 +1,39 @@
+/admin/articles/moderation/{id}/reject:
+  post:
+    tags:
+      - Admin
+    summary: Отклонение статьи
+    description: Отклонение статьи с указанием причины.
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: Идентификатор статьи.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [reason]
+            properties:
+              reason:
+                type: string
+                description: Причина отклонения статьи.
+    responses:
+      200:
+        description: Статья успешно отклонена.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Сообщение об успешном отклонении статьи.
+      401:
+        $ref: "#/definitions/401"
+      404:
+        $ref: "#/definitions/404"

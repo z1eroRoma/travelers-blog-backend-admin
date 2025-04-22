@@ -1,0 +1,37 @@
+/user/image:
+  patch:
+    tags:
+      - Personal-Account
+    summary: Upload or update profile image
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              image:
+                type: string
+                format: binary
+                description: Image file to upload
+    responses:
+      200:
+        description: Image uploaded successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                image:
+                  type: string
+                  description: URL of the uploaded image
+      400:
+        $ref: "#/definitions/400"
+      401:
+        $ref: "#/definitions/401"
+      415:
+        description: Unsupported media type

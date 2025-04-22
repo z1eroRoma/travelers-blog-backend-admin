@@ -1,0 +1,27 @@
+/admin/complaints/posts:
+  get:
+    tags:
+      - Admin
+    summary: Просмотр жалоб на посты
+    description: Получение списка жалоб на посты.
+    responses:
+      200:
+        description: Успешное получение списка жалоб на посты.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Идентификатор жалобы.
+                  post_id:
+                    type: string
+                    description: Идентификатор поста.
+                  description:
+                    type: string
+                    description: Описание жалобы.
+      404:
+        $ref: "#/definitions/404"

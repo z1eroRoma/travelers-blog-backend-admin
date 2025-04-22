@@ -1,0 +1,36 @@
+/admin/articles/{id}/unpublish:
+  post:
+    tags:
+      - Admin
+    summary: Снятие статьи с публикации
+    description: Снятие статьи с публикации администратором.
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Идентификатор статьи.
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        required: true
+        description: Токен авторизации.
+    responses:
+      200:
+        description: Статья успешно снята с публикации.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Сообщение об успешном выполнении операции.
+      400:
+        $ref: "#/definitions/400"
+      401:
+        $ref: "#/definitions/401"
+      404:
+        $ref: "#/definitions/404"

@@ -1,0 +1,23 @@
+/user/:
+  delete:
+    tags:
+      - Personal-Account
+    summary: Delete personal account
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: Account deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      400:
+        $ref: "#/definitions/400"
+      401:
+        $ref: "#/definitions/401"
+      404:
+        $ref: "#/definitions/404"

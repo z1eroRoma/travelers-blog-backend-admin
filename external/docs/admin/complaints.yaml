@@ -1,0 +1,37 @@
+/admin/complaints:
+  get:
+    tags:
+      - Admin
+    summary: Просмотр жалоб
+    description: Получение списка жалоб с возможностью фильтрации по типу.
+    parameters:
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum: [post, article]
+        description: Тип жалобы (пост или статья).
+        required: false
+    responses:
+      200:
+        description: Успешное получение списка жалоб.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Идентификатор жалобы.
+                  type:
+                    type: string
+                    description: Тип жалобы (пост или статья).
+                  description:
+                    type: string
+                    description: Описание жалобы.
+      400:
+        $ref: "#/definitions/400"
+      404:
+        $ref: "#/definitions/404"

@@ -1,0 +1,40 @@
+/preview/{id}:
+  patch:
+    tags:
+      - Personal-Account-Articles
+    summary: Update article preview
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              preview:
+                type: string
+                format: binary
+    responses:
+      200:
+        description: Preview updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      400:
+        $ref: "#/definitions/400"
+      401:
+        $ref: "#/definitions/401"
+      422:
+        $ref: "#/definitions/422"

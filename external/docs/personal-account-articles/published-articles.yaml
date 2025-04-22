@@ -1,0 +1,26 @@
+/published/{id}:
+  post:
+    tags:
+      - Personal-Account-Articles
+    summary: Publish an article
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        description: Article sent for moderation
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      401:
+        $ref: "#/definitions/401"

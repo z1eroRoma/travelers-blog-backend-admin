@@ -1,0 +1,48 @@
+/admin/complaints/commentPost:
+  get:
+    tags:
+      - Admin
+    summary: Просмотр жалоб на комментарии к постам
+    description: Получение списка жалоб на комментарии к постам.
+    parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Токен авторизации.
+        required: true
+    responses:
+      200:
+        description: Успешное получение списка жалоб на комментарии к постам.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Идентификатор жалобы.
+                  post_id:
+                    type: string
+                    description: Идентификатор поста.
+                  comment_id:
+                    type: string
+                    description: Идентификатор комментария.
+                  user_id:
+                    type: string
+                    description: Идентификатор пользователя, подавшего жалобу.
+                  reason:
+                    type: string
+                    description: Причина жалобы.
+                  description:
+                    type: string
+                    description: Описание жалобы.
+                  status:
+                    type: string
+                    description: Статус жалобы.
+      401:
+        $ref: "#/definitions/401"
+      404:
+        $ref: "#/definitions/404"

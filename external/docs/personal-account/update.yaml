@@ -1,0 +1,36 @@
+/user/:
+  patch:
+    tags:
+      - Personal-Account
+    summary: Update personal account information
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              real_name:
+                type: string
+              description:
+                type: string
+              birth_date:
+                type: string
+    responses:
+      200:
+        description: Profile updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      400:
+        $ref: "#/definitions/400"
+      401:
+        $ref: "#/definitions/401"
+      422:
+        $ref: "#/definitions/422"

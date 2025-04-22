@@ -1,0 +1,26 @@
+/{id}:
+  delete:
+    tags:
+      - Personal-Account-Articles
+    summary: Delete an article
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        description: Article deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      401:
+        $ref: "#/definitions/401"

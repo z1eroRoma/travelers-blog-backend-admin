@@ -1,0 +1,53 @@
+/user/validate-sign-up:
+  post:
+    tags:
+      - User
+    summary: Validate Sign Up
+    description: Проверка уникальности email и user_name при регистрации.
+    security: [ ]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [email, user_name, password]
+            properties:
+              email:
+                type: string
+                format: email
+                maxLength: 255
+                description: Электронная почта пользователя.
+              user_name:
+                type: string
+                minLength: 4
+                maxLength: 50
+                pattern: "^[a-zA-Z0-9_-]+$"
+                description: Уникальное имя пользователя.
+              password:
+                type: string
+                minLength: 8
+                maxLength: 100
+                description: Пароль пользователя.
+              real_name:
+                type: string
+                maxLength: 50
+                pattern: "^[a-zA-Zа-яА-Я\\s-]+$"
+                description: Настоящее имя пользователя (необязательно).
+              description:
+                type: string
+                maxLength: 255
+                description: Описание пользователя (необязательно).
+              birth_date:
+                type: string
+                format: date
+                description: Дата рождения пользователя в формате YYYY-MM-DD (необязательно).
+    responses:
+      200:
+        description: Успешная валидация. Все поля уникальны.
+      409:
+        description: Пользователь с таким email или user_name уже существует.
+        $ref: "#/definitions/409"
+      422:
+        description: Неверные данные в запросе (например, неправильный формат email).
+        $ref: "#/definitions/422"

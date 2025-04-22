@@ -1,0 +1,38 @@
+/user/:
+  get:
+    tags:
+      - Personal-Account
+    summary: Get personal account information
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Successful response
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_image:
+                  type: string
+                user_name:
+                  type: string
+                user_real_name:
+                  type: string
+                user_description:
+                  type: string
+                followers_count:
+                  type: string
+                following_count:
+                  type: string
+
+      401:
+        $ref: "#/definitions/401"
+      404:
+        $ref: "#/definitions/404"
