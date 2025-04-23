@@ -1,0 +1,42 @@
+/admin/complaints/{id}/reject:
+  post:
+    tags:
+      - Admin
+    summary: Удаление (отклонение) жалобы
+    description: Отклонение жалобы администратором.
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Идентификатор жалобы.
+      - in: query
+        name: type
+        schema:
+          type: string
+        description: Тип жалобы (post, article, commentArticle, commentPost).
+        required: false
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        required: true
+        description: Токен авторизации.
+    responses:
+      200:
+        description: Жалоба успешно отклонена.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Сообщение об успешном выполнении операции.
+      400:
+        $ref: "#/definitions/400"
+      401:
+        $ref: "#/definitions/401"
+      404:
+        $ref: "#/definitions/404"

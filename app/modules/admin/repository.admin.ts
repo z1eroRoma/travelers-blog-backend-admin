@@ -1,6 +1,7 @@
 import { and, eq, gte, InferInsertModel } from "drizzle-orm";
 import { DbConnection } from "../../common/config/drizzle-config";
 import { aricleStatusEnum } from "../../common/enum/article-status-types";
+import { ComplaintsStatusEnum } from "../../common/enum/complaints-status-types";
 import { VerifyCodeStatusEnum } from "../../common/enum/verify-code-types";
 import {
     admins,
@@ -117,4 +118,36 @@ export async function updatePostStatus(con: DbConnection, postId: string, status
         adminId: adminId
     };
     return con.update(posts).set(updateData).where(eq(posts.id, postId)).execute();
+}
+
+export async function updatePostComplaintStatus(con: DbConnection, complaintId: string, status: ComplaintsStatusEnum, adminId: string) {
+    const updateData = {
+        status: status,
+        adminId: adminId
+    };
+    return con.update(post_complaints).set(updateData).where(eq(post_complaints.id, complaintId)).execute();
+}
+
+export async function updateArticleComplaintStatus(con: DbConnection, complaintId: string, status: ComplaintsStatusEnum, adminId: string) {
+    const updateData = {
+        status: status,
+        adminId: adminId
+    };
+    return con.update(article_complaints).set(updateData).where(eq(article_complaints.id, complaintId)).execute();
+}
+
+export async function updateCommentArticleComplaintStatus(con: DbConnection, complaintId: string, status: ComplaintsStatusEnum, adminId: string) {
+    const updateData = {
+        status: status,
+        adminId: adminId
+    };
+    return con.update(article_comments_complaints).set(updateData).where(eq(article_comments_complaints.id, complaintId)).execute();
+}
+
+export async function updateCommentPostComplaintStatus(con: DbConnection, complaintId: string, status: ComplaintsStatusEnum, adminId: string) {
+    const updateData = {
+        status: status,
+        adminId: adminId
+    };
+    return con.update(post_comments_complaints).set(updateData).where(eq(post_comments_complaints.id, complaintId)).execute();
 }

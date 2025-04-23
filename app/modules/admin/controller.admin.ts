@@ -5,6 +5,7 @@ import { sqlCon } from "../../common/config/drizzle-config";
 import { IHandlingResponseError } from "../../common/config/http-response";
 import { sendEmail } from "../../common/config/node-mailer";
 import { aricleStatusEnum } from "../../common/enum/article-status-types";
+import { ComplaintsStatusEnum } from "../../common/enum/complaints-status-types";
 import { HandlingErrorType } from "../../common/enum/error-types";
 import { HttpStatusCode } from "../../common/enum/http-status-code";
 import { VerifyCodeStatusEnum } from "../../common/enum/verify-code-types";
@@ -14,6 +15,7 @@ import { IApproveArticleFastifySchema } from "./schemas/approveArticle.schema";
 import { IComplaintsFastifySchema } from "./schemas/complaints.schema";
 import { IAdminLoginFastifySchema } from "./schemas/login.schema";
 import { IRejectArticleFastifySchema } from "./schemas/rejectArticle.schema";
+import { IRejectComplaintFastifySchema } from "./schemas/rejectComplaint.schema";
 import { IAdminResetPasswordFastifySchema } from "./schemas/reset-password.schema";
 import { IUnpublishArticleFastifySchema } from "./schemas/unpublishArticle.schema";
 import { IUnpublishPostFastifySchema } from "./schemas/unpublishPost.schema";
@@ -288,4 +290,30 @@ export async function unpublishPost(req: FastifyRequest<IUnpublishPostFastifySch
     }
     await adminRepository.updatePostStatus(sqlCon, postId, false, decoded.id);
     return rep.code(HttpStatusCode.OK).send({ message: "Пост снят с публикации" });
+}
+
+export async function deleteComplaints(req: FastifyRequest<IRejectComplaintFastifySchema>, rep: FastifyReply) {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "No token provided" });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    if (typeof decoded !== "object" || !("id" in decoded)) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "Invalid token" });
+    }
+    const complaintId = req.params.id;
+    const type = req.query.type;
+    if (type === "post") {
+        await adminRepository.updatePostComplaintStatus(sqlCon, complaintId, ComplaintsStatusEnum["Отклонена"], decoded.id);
+    } else if (type === "article") {
+        await adminRepository.updateArticleComplaintStatus(sqlCon, complaintId, ComplaintsStatusEnum["Отклонена"], decoded.id);
+    } else if (type === "commentArticle") {
+        await adminRepository.updateCommentArticleComplaintStatus(sqlCon, complaintId, ComplaintsStatusEnum["Отклонена"], decoded.id);
+    } else if (type === "commentPost") {
+        await adminRepository.updateCommentPostComplaintStatus(sqlCon, complaintId, ComplaintsStatusEnum["Отклонена"], decoded.id);
+    } else {
+        return rep.code(HttpStatusCode.BAD_REQUEST).send({ message: "Invalid complaint type" });
+    }
+    return rep.code(HttpStatusCode.OK).send({ message: "Жалоба отклонена" });
 }
