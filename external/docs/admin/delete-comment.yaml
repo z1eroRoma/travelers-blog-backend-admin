@@ -1,0 +1,42 @@
+/admin/comments/{id}/delete:
+  post:
+    tags:
+      - Admin
+    summary: Удаление комментария
+    description: Удаление комментария администратором.
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Идентификатор комментария.
+      - in: query
+        name: type
+        schema:
+          type: string
+        description: Тип комментария (article, post).
+        required: false
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        required: true
+        description: Токен авторизации.
+    responses:
+      200:
+        description: Комментарий успешно удален.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Сообщение об успешном выполнении операции.
+      400:
+        $ref: "#/definitions/400"
+      401:
+        $ref: "#/definitions/401"
+      404:
+        $ref: "#/definitions/404"

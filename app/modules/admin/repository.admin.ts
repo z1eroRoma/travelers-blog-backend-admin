@@ -4,10 +4,10 @@ import { aricleStatusEnum } from "../../common/enum/article-status-types";
 import { ComplaintsStatusEnum } from "../../common/enum/complaints-status-types";
 import { VerifyCodeStatusEnum } from "../../common/enum/verify-code-types";
 import {
-    admins,
+    admins, article_comments,
     article_comments_complaints,
     article_complaints,
-    articles,
+    articles, post_comments,
     post_comments_complaints,
     post_complaints,
     posts,
@@ -150,4 +150,22 @@ export async function updateCommentPostComplaintStatus(con: DbConnection, compla
         adminId: adminId
     };
     return con.update(post_comments_complaints).set(updateData).where(eq(post_comments_complaints.id, complaintId)).execute();
+}
+
+export async function deleteArticleComment(con: DbConnection, commentId: string, adminId: string) {
+    await con.delete(article_comments).where(eq(article_comments.id, commentId)).execute();
+    const updateData = {
+        status: ComplaintsStatusEnum["Отклонена"],
+        adminId: adminId
+    };
+    return con.update(article_comments_complaints).set(updateData).where(eq(article_comments_complaints.article_comment_id, commentId)).execute();
+}
+
+export async function deletePostComment(con: DbConnection, commentId: string, adminId: string) {
+    await con.delete(post_comments).where(eq(post_comments.id, commentId)).execute();
+    const updateData = {
+        status: ComplaintsStatusEnum["Отклонена"],
+        adminId: adminId
+    };
+    return con.update(post_comments_complaints).set(updateData).where(eq(post_comments_complaints.post_comment_id, commentId)).execute();
 }

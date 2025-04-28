@@ -13,6 +13,7 @@ import { IVerifyCodeFastifySchema } from "../user/schemas/verifyCode.schema";
 import * as adminRepository from "./repository.admin";
 import { IApproveArticleFastifySchema } from "./schemas/approveArticle.schema";
 import { IComplaintsFastifySchema } from "./schemas/complaints.schema";
+import { IDeleteCommentFastifySchema } from "./schemas/deleteComment.schema";
 import { IAdminLoginFastifySchema } from "./schemas/login.schema";
 import { IRejectArticleFastifySchema } from "./schemas/rejectArticle.schema";
 import { IRejectComplaintFastifySchema } from "./schemas/rejectComplaint.schema";
@@ -316,4 +317,26 @@ export async function deleteComplaints(req: FastifyRequest<IRejectComplaintFasti
         return rep.code(HttpStatusCode.BAD_REQUEST).send({ message: "Invalid complaint type" });
     }
     return rep.code(HttpStatusCode.OK).send({ message: "Жалоба отклонена" });
+}
+
+export async function deleteComment(req: FastifyRequest<IDeleteCommentFastifySchema>, rep: FastifyReply) {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "No token provided" });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    if (typeof decoded !== "object" || !("id" in decoded)) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "Invalid token" });
+    }
+    const commentId = req.params.id;
+    const type = req.query.type;
+    if (type === "article") {
+        await adminRepository.deleteArticleComment(sqlCon, commentId, decoded.id);
+    } else if (type === "post") {
+        await adminRepository.deletePostComment(sqlCon, commentId, decoded.id);
+    } else {
+        return rep.code(HttpStatusCode.BAD_REQUEST).send({ message: "Invalid comment type" });
+    }
+    return rep.code(HttpStatusCode.OK).send({ message: "Комментарий удален" });
 }
