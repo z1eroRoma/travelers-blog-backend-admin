@@ -190,3 +190,7 @@ export async function addNewAdmin(con: DbConnection, email: string, name: string
     };
     return con.insert(admins).values(insertData).execute();
 }
+
+export async function getAllAdmins(con: DbConnection) {
+    return con.select().from(admins).execute();
+}

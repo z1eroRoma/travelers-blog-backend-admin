@@ -29,5 +29,6 @@ export const adminRouter = async (app: FastifyInstance) => {
     app.post("/posts/:id/unpublish", { schema: unpublishPostSchema }, adminController.unpublishPost);
     app.post("/complaints/:id/reject", { schema: rejectComplaintSchema }, adminController.deleteComplaints);
     app.post("/comments/:id/delete", { schema: deleteCommentSchema }, adminController.deleteComment);
-    app.post("/admins", { schema: addAdminSchema }, adminController.addAdmin)
+    app.post("/admins", { schema: addAdminSchema }, adminController.addAdmin);
+    app.get("/admins", adminController.viewAdmins);
 };

@@ -364,3 +364,21 @@ export async function addAdmin(req: FastifyRequest<IAddAdminFastifySchema>, rep:
     await adminRepository.addNewAdmin(sqlCon, email, name, surname, role);
     return rep.code(HttpStatusCode.CREATED).send({ message: "Admin successfully added" });
 }
+
+export async function viewAdmins(req: FastifyRequest, rep: FastifyReply) {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "No token provided" });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    if (typeof decoded !== "object" || !("id" in decoded)) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "Invalid token" });
+    }
+    const admins = await adminRepository.getAllAdmins(sqlCon);
+    if (admins.length === 0) {
+        return rep.code(HttpStatusCode.NOT_FOUND).send({ message: "Admins not found" });
+    }
+
+    return rep.code(HttpStatusCode.OK).send(admins);
+}

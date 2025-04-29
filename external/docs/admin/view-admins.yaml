@@ -1,0 +1,35 @@
+/admin/admins:
+  get:
+    tags:
+      - Admin
+    summary: Просмотр списка админов
+    description: Получение списка всех администраторов.
+    responses:
+      200:
+        description: Список администраторов успешно получен.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Уникальный идентификатор админа.
+                  name:
+                    type: string
+                    description: Имя администратора.
+                  surname:
+                    type: string
+                    description: Фамилия администратора.
+                  email:
+                    type: string
+                    description: Электронная почта администратора.
+                  role:
+                    type: number
+                    description: Роль администратора.
+      401:
+        $ref: "#/definitions/401"
+      404:
+        $ref: "#/definitions/404"
