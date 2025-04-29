@@ -1,0 +1,48 @@
+/admin/admins/search:
+  get:
+    tags:
+      - Admin
+    summary: Поиск админа по почте
+    description: Поиск администратора по email супер-админом.
+    parameters:
+      - in: query
+        name: email
+        schema:
+          type: string
+        required: true
+        description: Электронная почта администратора.
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        required: true
+        description: Токен авторизации.
+    responses:
+      200:
+        description: Администратор успешно найден.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Уникальный идентификатор админа.
+                name:
+                  type: string
+                  description: Имя администратора.
+                surname:
+                  type: string
+                  description: Фамилия администратора.
+                email:
+                  type: string
+                  description: Электронная почта администратора.
+                role:
+                  type: number
+                  description: Роль администратора.
+      401:
+        $ref: "#/definitions/401"
+      403:
+        $ref: "#/definitions/403"
+      404:
+        $ref: "#/definitions/404"

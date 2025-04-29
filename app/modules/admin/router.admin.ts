@@ -11,6 +11,7 @@ import { editAdminSchema } from "./schemas/editAdmin.schema";
 import { adminLoginFastifySchema } from "./schemas/login.schema";
 import { rejectArticleSchema } from "./schemas/rejectArticle.schema";
 import { rejectComplaintSchema } from "./schemas/rejectComplaint.schema";
+import { searchAdminByEmailSchema } from "./schemas/serchAdminByEmail.schema";
 import { unpublishArticleSchema } from "./schemas/unpublishArticle.schema";
 import { unpublishPostSchema } from "./schemas/unpublishPost.schema";
 
@@ -35,4 +36,5 @@ export const adminRouter = async (app: FastifyInstance) => {
     app.get("/admins", adminController.viewAdmins);
     app.put("/admins", { schema: editAdminSchema }, adminController.editAdmin);
     app.delete("/admins/:id", { schema: deleteAdminSchema }, adminController.deleteAdmin);
+    app.get("/admins/search", { schema: searchAdminByEmailSchema }, adminController.searchAdminByEmail);
 };
