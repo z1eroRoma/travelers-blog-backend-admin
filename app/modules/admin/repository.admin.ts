@@ -211,3 +211,7 @@ export async function updateAdmin(con: DbConnection, adminId: string, name: stri
     };
     return con.update(admins).set(updateData).where(eq(admins.id, adminId)).execute();
 }
+
+export async function deleteAdmin(con: DbConnection, adminId: string) {
+    return con.delete(admins).where(eq(admins.id, adminId)).execute();
+}

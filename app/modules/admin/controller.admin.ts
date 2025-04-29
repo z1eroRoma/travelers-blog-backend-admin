@@ -14,6 +14,7 @@ import * as adminRepository from "./repository.admin";
 import { IAddAdminFastifySchema } from "./schemas/AddAdmin.schema";
 import { IApproveArticleFastifySchema } from "./schemas/approveArticle.schema";
 import { IComplaintsFastifySchema } from "./schemas/complaints.schema";
+import { IDeleteAdminFastifySchema } from "./schemas/deleteAdmin.schema";
 import { IDeleteCommentFastifySchema } from "./schemas/deleteComment.schema";
 import { IEditAdminFastifySchema } from "./schemas/editAdmin.schema";
 import { IAdminLoginFastifySchema } from "./schemas/login.schema";
@@ -405,4 +406,27 @@ export async function editAdmin(req: FastifyRequest<IEditAdminFastifySchema>, re
     }
     await adminRepository.updateAdmin(sqlCon, id, name, surname, role);
     return rep.code(HttpStatusCode.OK).send({ message: "Admin successfully updated" });
+}
+
+export async function deleteAdmin(req: FastifyRequest<IDeleteAdminFastifySchema>, rep: FastifyReply) {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "No token provided" });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    if (typeof decoded !== "object" || !("id" in decoded)) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "Invalid token" });
+    }
+    const isSuperAdmin = await adminRepository.isSuperAdmin(sqlCon, decoded.id);
+    if (!isSuperAdmin) {
+        return rep.code(HttpStatusCode.FORBIDDEN).send({ message: "Only super admin can delete admins" });
+    }
+    const adminId = req.params.id;
+    const existingAdmin = await adminRepository.getAdminById(sqlCon, adminId);
+    if (!existingAdmin) {
+        return rep.code(HttpStatusCode.NOT_FOUND).send({ message: "Admin not found" });
+    }
+    await adminRepository.deleteAdmin(sqlCon, adminId);
+    return rep.code(HttpStatusCode.OK).send({ message: "Admin successfully deleted" });
 }
