@@ -4,10 +4,12 @@ import { aricleStatusEnum } from "../../common/enum/article-status-types";
 import { ComplaintsStatusEnum } from "../../common/enum/complaints-status-types";
 import { VerifyCodeStatusEnum } from "../../common/enum/verify-code-types";
 import {
-    admins, article_comments,
+    admins,
+    article_comments,
     article_comments_complaints,
     article_complaints,
-    articles, post_comments,
+    articles,
+    post_comments,
     post_comments_complaints,
     post_complaints,
     posts,
@@ -168,4 +170,23 @@ export async function deletePostComment(con: DbConnection, commentId: string, ad
         adminId: adminId
     };
     return con.update(post_comments_complaints).set(updateData).where(eq(post_comments_complaints.post_comment_id, commentId)).execute();
+}
+
+export async function isSuperAdmin(con: DbConnection, adminId: string) {
+    const result = await con
+        .select()
+        .from(admins)
+        .where(and(eq(admins.id, adminId), eq(admins.role, 1)));
+    return result.length > 0;
+}
+
+export async function addNewAdmin(con: DbConnection, email: string, name: string, surname: string, role: number, password: string) {
+    const insertData = {
+        email,
+        name,
+        surname,
+        role,
+        password
+    };
+    return con.insert(admins).values(insertData).execute();
 }

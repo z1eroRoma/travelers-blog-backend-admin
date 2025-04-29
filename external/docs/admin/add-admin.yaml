@@ -1,0 +1,45 @@
+/admin/admins:
+  post:
+    tags:
+      - Admin
+    summary: Добавление админа
+    description: Добавление нового администратора супер-админом.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [email, name, surname, role]
+            properties:
+              email:
+                type: string
+                format: email
+                description: Электронная почта администратора.
+              name:
+                type: string
+                description: Имя администратора.
+              surname:
+                type: string
+                description: Фамилия администратора.
+              role:
+                type: integer
+                description: Роль администратора.
+    responses:
+      201:
+        description: Администратор успешно добавлен.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Сообщение об успешном выполнении операции.
+      400:
+        $ref: "#/definitions/400"
+      401:
+        $ref: "#/definitions/401"
+      403:
+        $ref: "#/definitions/403"
+

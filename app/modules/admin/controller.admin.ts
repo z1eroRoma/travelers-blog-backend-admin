@@ -11,6 +11,7 @@ import { HttpStatusCode } from "../../common/enum/http-status-code";
 import { VerifyCodeStatusEnum } from "../../common/enum/verify-code-types";
 import { IVerifyCodeFastifySchema } from "../user/schemas/verifyCode.schema";
 import * as adminRepository from "./repository.admin";
+import { IAddAdminFastifySchema } from "./schemas/AddAdmin.schema";
 import { IApproveArticleFastifySchema } from "./schemas/approveArticle.schema";
 import { IComplaintsFastifySchema } from "./schemas/complaints.schema";
 import { IDeleteCommentFastifySchema } from "./schemas/deleteComment.schema";
@@ -339,4 +340,27 @@ export async function deleteComment(req: FastifyRequest<IDeleteCommentFastifySch
         return rep.code(HttpStatusCode.BAD_REQUEST).send({ message: "Invalid comment type" });
     }
     return rep.code(HttpStatusCode.OK).send({ message: "Комментарий удален" });
+}
+
+export async function addAdmin(req: FastifyRequest<IAddAdminFastifySchema>, rep: FastifyReply) {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "No token provided" });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    if (typeof decoded !== "object" || !("id" in decoded)) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "Invalid token" });
+    }
+    const isSuperAdmin = await adminRepository.isSuperAdmin(sqlCon, decoded.id);
+    if (!isSuperAdmin) {
+        return rep.code(HttpStatusCode.FORBIDDEN).send({ message: "Only super admin can add new admins" });
+    }
+    const { email, name, surname, role } = req.body;
+    const existingAdmin = await adminRepository.getAdminByEmail(sqlCon, email);
+    if (existingAdmin) {
+        return rep.code(HttpStatusCode.BAD_REQUEST).send({ message: "Admin with this email already exists" });
+    }
+    await adminRepository.addNewAdmin(sqlCon, email, name, surname, role);
+    return rep.code(HttpStatusCode.CREATED).send({ message: "Admin successfully added" });
 }

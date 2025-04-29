@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify";
 import { resetPasswordFastifySchema } from "../user/schemas/reset-password.schema";
 import { verifyCodeFastifySchema } from "../user/schemas/verifyCode.schema";
 import * as adminController from "./controller.admin";
+import { addAdminSchema } from "./schemas/AddAdmin.schema";
 import { approveArticleSchema } from "./schemas/approveArticle.schema";
 import { complaintsSchema } from "./schemas/complaints.schema";
 import { deleteCommentSchema } from "./schemas/deleteComment.schema";
@@ -28,4 +29,5 @@ export const adminRouter = async (app: FastifyInstance) => {
     app.post("/posts/:id/unpublish", { schema: unpublishPostSchema }, adminController.unpublishPost);
     app.post("/complaints/:id/reject", { schema: rejectComplaintSchema }, adminController.deleteComplaints);
     app.post("/comments/:id/delete", { schema: deleteCommentSchema }, adminController.deleteComment);
+    app.post("/admins", { schema: addAdminSchema }, adminController.addAdmin)
 };
