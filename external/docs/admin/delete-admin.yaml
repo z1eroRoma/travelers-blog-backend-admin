@@ -1,0 +1,36 @@
+/admin/admins/{id}:
+  delete:
+    tags:
+      - Admin
+    summary: Удаление админа
+    description: Удаление администратора супер-админом.
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Уникальный идентификатор админа.
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        required: true
+        description: Токен авторизации.
+    responses:
+      200:
+        description: Администратор успешно удален.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Сообщение об успешном выполнении операции.
+      401:
+        $ref: "#/definitions/401"
+      403:
+        $ref: "#/definitions/403"
+      404:
+        $ref: "#/definitions/404"
