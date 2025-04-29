@@ -1,0 +1,46 @@
+/admin/admins:
+  put:
+    tags:
+      - Admin
+    summary: Редактирование админа
+    description: Редактирование данных администратора супер-админом.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [id, name, surname, role]
+            properties:
+              id:
+                type: string
+                format: uuid
+                description: Уникальный идентификатор админа.
+              name:
+                type: string
+                description: Имя администратора.
+              surname:
+                type: string
+                description: Фамилия администратора.
+              role:
+                type: integer
+                description: Роль администратора.
+    responses:
+      200:
+        description: Данные администратора успешно обновлены.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Сообщение об успешном выполнении операции.
+      400:
+        $ref: "#/definitions/400"
+      401:
+        $ref: "#/definitions/401"
+      403:
+        $ref: "#/definitions/403"
+      404:
+        $ref: "#/definitions/404"

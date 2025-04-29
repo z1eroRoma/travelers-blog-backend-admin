@@ -6,6 +6,7 @@ import { addAdminSchema } from "./schemas/AddAdmin.schema";
 import { approveArticleSchema } from "./schemas/approveArticle.schema";
 import { complaintsSchema } from "./schemas/complaints.schema";
 import { deleteCommentSchema } from "./schemas/deleteComment.schema";
+import { editAdminSchema } from "./schemas/editAdmin.schema";
 import { adminLoginFastifySchema } from "./schemas/login.schema";
 import { rejectArticleSchema } from "./schemas/rejectArticle.schema";
 import { rejectComplaintSchema } from "./schemas/rejectComplaint.schema";
@@ -31,4 +32,5 @@ export const adminRouter = async (app: FastifyInstance) => {
     app.post("/comments/:id/delete", { schema: deleteCommentSchema }, adminController.deleteComment);
     app.post("/admins", { schema: addAdminSchema }, adminController.addAdmin);
     app.get("/admins", adminController.viewAdmins);
+    app.put("/admins", { schema: editAdminSchema }, adminController.editAdmin);
 };

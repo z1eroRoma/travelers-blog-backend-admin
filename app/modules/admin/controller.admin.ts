@@ -15,6 +15,7 @@ import { IAddAdminFastifySchema } from "./schemas/AddAdmin.schema";
 import { IApproveArticleFastifySchema } from "./schemas/approveArticle.schema";
 import { IComplaintsFastifySchema } from "./schemas/complaints.schema";
 import { IDeleteCommentFastifySchema } from "./schemas/deleteComment.schema";
+import { IEditAdminFastifySchema } from "./schemas/editAdmin.schema";
 import { IAdminLoginFastifySchema } from "./schemas/login.schema";
 import { IRejectArticleFastifySchema } from "./schemas/rejectArticle.schema";
 import { IRejectComplaintFastifySchema } from "./schemas/rejectComplaint.schema";
@@ -381,4 +382,27 @@ export async function viewAdmins(req: FastifyRequest, rep: FastifyReply) {
     }
 
     return rep.code(HttpStatusCode.OK).send(admins);
+}
+
+export async function editAdmin(req: FastifyRequest<IEditAdminFastifySchema>, rep: FastifyReply) {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "No token provided" });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    if (typeof decoded !== "object" || !("id" in decoded)) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "Invalid token" });
+    }
+    const isSuperAdmin = await adminRepository.isSuperAdmin(sqlCon, decoded.id);
+    if (!isSuperAdmin) {
+        return rep.code(HttpStatusCode.FORBIDDEN).send({ message: "Only super admin can edit admins" });
+    }
+    const { id, name, surname, role } = req.body;
+    const existingAdmin = await adminRepository.getAdminById(sqlCon, id);
+    if (!existingAdmin) {
+        return rep.code(HttpStatusCode.NOT_FOUND).send({ message: "Admin not found" });
+    }
+    await adminRepository.updateAdmin(sqlCon, id, name, surname, role);
+    return rep.code(HttpStatusCode.OK).send({ message: "Admin successfully updated" });
 }

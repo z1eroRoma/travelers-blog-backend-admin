@@ -194,3 +194,20 @@ export async function addNewAdmin(con: DbConnection, email: string, name: string
 export async function getAllAdmins(con: DbConnection) {
     return con.select().from(admins).execute();
 }
+
+export async function getAdminById(con: DbConnection, adminId: string) {
+    return con
+        .select()
+        .from(admins)
+        .where(eq(admins.id, adminId))
+        .then((result) => result[0]);
+}
+
+export async function updateAdmin(con: DbConnection, adminId: string, name: string, surname: string, role: number) {
+    const updateData = {
+        name,
+        surname,
+        role
+    };
+    return con.update(admins).set(updateData).where(eq(admins.id, adminId)).execute();
+}
